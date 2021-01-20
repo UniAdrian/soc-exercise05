@@ -91,7 +91,7 @@ class CustomerServiceImplTest {
         customer.setName("Another test name!");
 
         when(repo.save(customer)).thenReturn(customer);
+        customerService.updateCustomer(customer.getId(), mapper.customerToCustomerDto(customer));
         assertEquals("Another test name!", customerService.getCustomerById(uuid).getName());
-        verify(repo, times(1)).findById(uuid);
     }
 }
