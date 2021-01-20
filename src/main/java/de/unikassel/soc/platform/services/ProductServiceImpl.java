@@ -5,6 +5,7 @@ import de.unikassel.soc.platform.repos.ProductRepo;
 import de.unikassel.soc.platform.web.mappers.ProductMapper;
 import de.unikassel.soc.platform.web.mappers.ProductMapperImpl;
 import de.unikassel.soc.platform.web.model.ProductDto;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
