@@ -48,9 +48,50 @@ class CustomerServiceImplTest {
     @Test
     void getCustomerById() {
         UUID uuid = UUID.randomUUID();
-        Customer customer = new Customer(uuid, "Test", new ArrayList<Product>());
+        Customer customer = new Customer(uuid, "Test", new ArrayList<>());
         when(repo.findById(uuid)).thenReturn(Optional.of(customer));
         assertEquals(customer.getName(), customerService.getCustomerById(uuid).getName());
+        verify(repo, times(1)).findById(uuid);
+    }
+
+    @Test
+    void getCustomerByNameError() {
+        // We use UUID to get a random string.
+        UUID uuid = UUID.randomUUID();
+        assertTrue(customerService.getCustomersByName(uuid.toString()).isEmpty());
+    }
+
+    @Test
+    void getCustomerByName() {
+        String randomName = UUID.randomUUID().toString();
+
+        Customer customer = new Customer(UUID.randomUUID(), randomName, new ArrayList<>());
+        Customer customer2 = new Customer(UUID.randomUUID(), randomName, new ArrayList<>());
+
+        ArrayList<Customer> asOptional =new ArrayList<>()
+        {
+            {
+                add(customer);
+                add(customer2);
+            }
+        };
+
+        when(repo.findByName(randomName)).thenReturn(asOptional);
+
+        assertEquals(customer.getName(), customerService.getCustomersByName(randomName).get(0).getName());
+        verify(repo, times(1)).findByName(randomName);
+    }
+
+    @Test
+    void updateCustomer() {
+        UUID uuid = UUID.randomUUID();
+        Customer customer = new Customer(uuid, "Test", new ArrayList<>());
+        when(repo.findById(uuid)).thenReturn(Optional.of(customer));
+
+        customer.setName("Another test name!");
+
+        when(repo.save(customer)).thenReturn(customer);
+        assertEquals("Another test name!", customerService.getCustomerById(uuid).getName());
         verify(repo, times(1)).findById(uuid);
     }
 }
