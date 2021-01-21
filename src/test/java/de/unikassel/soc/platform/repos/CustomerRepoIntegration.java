@@ -20,7 +20,7 @@ class CustomerRepoIntegration {
 
     @Test
     @Transactional
-//    @DirtiesContext
+    @DirtiesContext
     void findByName() {
         customerRepo.saveAll(List.of(
                 new Customer(UUID.randomUUID(), "Hans", null),
