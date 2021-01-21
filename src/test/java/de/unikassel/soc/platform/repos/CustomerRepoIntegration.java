@@ -38,16 +38,12 @@ class CustomerRepoIntegration {
     @Transactional
     @DirtiesContext
     void findById() {
+        // Insert a new Customer, the database will automatically assign a new UUID.
+        Customer storedCustomer = customerRepo.save(new Customer(UUID.randomUUID(), "Hans", null));
 
-        UUID uuid = UUID.randomUUID();
-        customerRepo.saveAll(List.of(
-                new Customer(UUID.randomUUID(), "Hans", null),
-                new Customer(uuid, "Hans", null),
-                new Customer(UUID.randomUUID(), "Tanja", null)
-        ));
-
-        Optional<Customer> customer = customerRepo.findById(uuid);
-        assertTrue(customer.isPresent() && customer.get().getName().equals("Hans"));
+        Optional<Customer> customer = customerRepo.findById(storedCustomer.getId());
+        assertTrue(customer.isPresent());
+        assertEquals(customer.get(), storedCustomer);
     }
 
     @Test
