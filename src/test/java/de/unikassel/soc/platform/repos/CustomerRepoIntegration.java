@@ -8,6 +8,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +32,22 @@ class CustomerRepoIntegration {
 
         List<Customer> customers = customerRepo.findByName("Hans");
         assertEquals(2, customers.size());
+    }
+
+    @Test
+    @Transactional
+    @DirtiesContext
+    void findById() {
+
+        UUID uuid = UUID.randomUUID();
+        customerRepo.saveAll(List.of(
+                new Customer(UUID.randomUUID(), "Hans", null),
+                new Customer(uuid, "Hans", null),
+                new Customer(UUID.randomUUID(), "Tanja", null)
+        ));
+
+        Optional<Customer> customer = customerRepo.findById(uuid);
+        assertTrue(customer.isPresent() && customer.get().getName().equals("Hans"));
     }
 
     @Test
