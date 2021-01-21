@@ -1,12 +1,14 @@
 package de.unikassel.soc.platform.repos;
 
 import de.unikassel.soc.platform.domain.Customer;
+import de.unikassel.soc.platform.domain.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,6 +34,22 @@ class CustomerRepoIntegration {
 
         List<Customer> customers = customerRepo.findByName("Hans");
         assertEquals(2, customers.size());
+    }
+
+    @Test
+    @Transactional
+    @DirtiesContext
+    void save() {
+        Customer toStore = new Customer(UUID.randomUUID(), "Hans", new ArrayList<>() {{
+            add(new Product(UUID.randomUUID(), "Product 1", "A test product", 14.99, "Euro"));
+            add(new Product(UUID.randomUUID(), "Product 2", "Another test product", 14.99, "Euro"));
+            add(new Product(UUID.randomUUID(), "Product 3", "And one more test product", 14.99, "Euro"));
+        }});
+
+        Customer stored = customerRepo.save(toStore);
+
+        assertEquals(3, stored.getProducts().size());
+        assertEquals(toStore.getName(), stored.getName());
     }
 
     @Test
